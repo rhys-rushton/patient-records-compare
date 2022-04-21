@@ -20,7 +20,9 @@ class Compare_Data:
         data_processing(self.rhino_file.get(), self.red_rc.get(), self.dsp_file.get())
 
     def run_data(self, mainframe):
-        Label(mainframe, text = 'Currently Running Process. Please do not touch').grid(column=4, row = 4)
+        
+        ttk.Label(mainframe, text = 'Currently Running Process. Please do not touch').grid(column=4, row = 4)
+        root.update()
         self.get_data()
         
 
