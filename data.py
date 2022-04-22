@@ -26,11 +26,12 @@ def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date):
     # remove whitepace in strings so I can index properly. 
     rhino_report['medicare_number'] = rhino_report['medicare_number'].str.replace(' ', '')
     merged_data['MEDICARE_NUMBER'] = merged_data['MEDICARE_NUMBER'].str.slice(start = 0, stop = 10)
-    merged_data['MEDICARE_NUMBER'] = merged_data['MEDICARE_NUMBER'].str.replace(' ', '')
-    merged_data['DATE_OF_BIRTH'] = merged_data['DATE_OF_BIRTH'].str.replace(' ', '')
-    rhino_report['date_of_birth'] = rhino_report['date_of_birth'].str.replace(' ', '')
+    #merged_data['MEDICARE_NUMBER'] = merged_data['MEDICARE_NUMBER'].str.replace(' ', '')
+    #merged_data['DATE_OF_BIRTH'] = merged_data['DATE_OF_BIRTH'].str.replace(' ', '')
+    #rhino_report['date_of_birth'] = rhino_report['date_of_birth'].str.replace(' ', '')
     rhino_report['encounter_date'] = pd.to_datetime(rhino_report['encounter_date'], format='%d/%m/%Y')
     merged_data['ServDate'] = pd.to_datetime(merged_data['ServDate'], format='%d/%m/%Y')
+    merged_data['DATE_OF_BIRTH'] = pd.to_datetime(merged_data['DATE_OF_BIRTH'], format='%d/%m/%Y')
     #merged_data['ServDate'] = merged_data['ServDate'].dt.strftime('%d/%m/%Y')
     #rhino_report['encounter_date'] = rhino_report['encounter_date'].dt.strftime('%d/%m/%Y')
     #rhino_report['encounter_date'] = rhino_report['encounter_date'].str.replace(' ', '')
@@ -45,7 +46,7 @@ def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date):
     merged_data_date_filter = merged_data_date_filter.rename(columns = {'ServDate':'encounter_date', 'DATE_OF_BIRTH':'date_of_birth','MEDICARE_NUMBER': 'medicare_number'})
 
     print(rhino_report_date_filter['date_of_birth'])
-    print(merged_data_date_filter)
+    print(merged_data_date_filter['date_of_birth'])
 
     
 
