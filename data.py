@@ -36,25 +36,20 @@ def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date):
     #rhino_report['encounter_date'] = rhino_report['encounter_date'].str.replace(' ', '')
     #merged_data['ServDate'] = merged_data['ServDate'].str.replace(' ', '')
 
-
-    print(rhino_report.dtypes)
-    
     start_date = datetime.strptime(start_date, '%d/%m/%Y')
     end_date = datetime.strptime(end_date, '%d/%m/%Y')
-    #start_date = datetime.date(start_date,'%d/%m/%Y')
-    #end_date = datetime.date(end_date,'%d/%m/%Y')
-    print(start_date)
-    print(end_date)
 
-    
     rhino_report_date_filter = rhino_report[(rhino_report.encounter_date >= start_date) & (rhino_report.encounter_date <= end_date)]
     merged_data_date_filter = merged_data[(merged_data.ServDate >= start_date) & (merged_data.ServDate <= end_date)]
-    
-    print(rhino_report_date_filter)
+
+    merged_data_date_filter = merged_data_date_filter.rename(columns = {'ServDate':'encounter_date', 'DATE_OF_BIRTH':'date_of_birth','MEDICARE_NUMBER': 'medicare_number'})
+
+    print(rhino_report_date_filter['date_of_birth'])
     print(merged_data_date_filter)
 
-    rhino_report.to_csv('rhino.csv' , header = True)
     
+
+    rhino_report.to_csv('rhino.csv' , header = True)
     merged_data.to_csv('test.csv', header=True)
 
     #for col in rhino_report.columns:
