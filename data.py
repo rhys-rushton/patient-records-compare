@@ -1,8 +1,9 @@
 from ast import Str
+from tracemalloc import start
 import pandas as pd
-import datetime as dt
+from datetime import datetime
 
-def data_processing(rhino_report, red_rc, dsp_patients):
+def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date):
     pd.set_option('display.float_format', lambda x: '%.0f' % x)
     fields_for_rhino = ['encounter_date', 'encounter_time', 'encounter_id', 'first_name', 'last_name', 'date_of_birth', 'age_at_presentation', 'gender', 'medicare_number', 'indigenous_status', 'address_line1', 'suburb', 'state', 'postcode', 'emergency_contact_name', 'country_of_birth','home_language', 'patient_symptoms', 'usual_medications', 'specimen_collected', 'diagnosis', 'outcome']
     rhino_report = pd.read_excel(rhino_report, dtype={'medicare_number': 'str'}, usecols= fields_for_rhino)
@@ -25,20 +26,44 @@ def data_processing(rhino_report, red_rc, dsp_patients):
     # remove whitepace in strings so I can index properly. 
     rhino_report['medicare_number'] = rhino_report['medicare_number'].str.replace(' ', '')
     merged_data['MEDICARE_NUMBER'] = merged_data['MEDICARE_NUMBER'].str.slice(start = 0, stop = 10)
+    merged_data['MEDICARE_NUMBER'] = merged_data['MEDICARE_NUMBER'].str.replace(' ', '')
+    merged_data['DATE_OF_BIRTH'] = merged_data['DATE_OF_BIRTH'].str.replace(' ', '')
+    rhino_report['date_of_birth'] = rhino_report['date_of_birth'].str.replace(' ', '')
+    rhino_report['encounter_date'] = pd.to_datetime(rhino_report['encounter_date'], format='%d/%m/%Y')
+    merged_data['ServDate'] = pd.to_datetime(merged_data['ServDate'], format='%d/%m/%Y')
+    #merged_data['ServDate'] = merged_data['ServDate'].dt.strftime('%d/%m/%Y')
+    #rhino_report['encounter_date'] = rhino_report['encounter_date'].dt.strftime('%d/%m/%Y')
+    #rhino_report['encounter_date'] = rhino_report['encounter_date'].str.replace(' ', '')
+    #merged_data['ServDate'] = merged_data['ServDate'].str.replace(' ', '')
+
+
+    print(rhino_report.dtypes)
+    
+    start_date = datetime.strptime(start_date, '%d/%m/%Y')
+    end_date = datetime.strptime(end_date, '%d/%m/%Y')
+    #start_date = datetime.date(start_date,'%d/%m/%Y')
+    #end_date = datetime.date(end_date,'%d/%m/%Y')
+    print(start_date)
+    print(end_date)
 
     
+    rhino_report_date_filter = rhino_report[(rhino_report.encounter_date >= start_date) & (rhino_report.encounter_date <= end_date)]
+    merged_data_date_filter = merged_data[(merged_data.ServDate >= start_date) & (merged_data.ServDate <= end_date)]
+    
+    print(rhino_report_date_filter)
+    print(merged_data_date_filter)
 
-
+    rhino_report.to_csv('rhino.csv' , header = True)
     
     merged_data.to_csv('test.csv', header=True)
 
-    for col in rhino_report.columns:
-        print(col)
+    #for col in rhino_report.columns:
+        #print(col)
 
-    print('done')
-    print(merged_data)
-    print(rhino_report['medicare_number'])
-    print(merged_data.MEDICARE_NUMBER)
+    #print('done')
+    #print(merged_data)
+   # print(rhino_report['medicare_number'])
+    #print(merged_data.MEDICARE_NUMBER)
 
  
 
