@@ -1,4 +1,5 @@
 from ast import Str
+from email.utils import parsedate_to_datetime
 from tracemalloc import start
 import pandas as pd
 from datetime import datetime
@@ -6,7 +7,7 @@ from datetime import datetime
 def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date):
     pd.set_option('display.float_format', lambda x: '%.0f' % x)
     fields_for_rhino = ['encounter_date', 'encounter_time', 'encounter_id', 'first_name', 'last_name', 'date_of_birth', 'age_at_presentation', 'gender', 'medicare_number', 'indigenous_status', 'address_line1', 'suburb', 'state', 'postcode', 'emergency_contact_name', 'country_of_birth','home_language', 'patient_symptoms', 'usual_medications', 'specimen_collected', 'diagnosis', 'outcome']
-    rhino_report = pd.read_excel(rhino_report, dtype={'medicare_number': 'str'}, usecols= fields_for_rhino)
+    rhino_report = pd.read_excel(rhino_report, dtype={'medicare_number': 'str'},usecols= fields_for_rhino)
     red_rc = pd.read_csv(red_rc, header=0, encoding='CP1252')
     dsp_patients = pd.read_csv(dsp_patients, header=0, encoding='CP1252')
     red_rc = red_rc.drop(columns=['Patient','Patient Type','Payer','Account Payer Type', 'Date','Brn','Doc','Stf','Inv #','Item','Transaction Type','Transaction Status','GST','Amount','Fee Type','Analysis Group'])
@@ -36,6 +37,10 @@ def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date):
     #rhino_report['encounter_date'] = rhino_report['encounter_date'].dt.strftime('%d/%m/%Y')
     #rhino_report['encounter_date'] = rhino_report['encounter_date'].str.replace(' ', '')
     #merged_data['ServDate'] = merged_data['ServDate'].str.replace(' ', '')
+    #rhino_report['date_of_birth'] = rhino_report['date_of_birth'].str.slice(start = 0, stop = 10)
+    rhino_report['date_of_birth'] = pd.to_datetime(rhino_report['date_of_birth'], errors='coerce')
+    rhino_report['date_of_birth'] = rhino_report['date_of_birth'].dt.date
+    merged_data['DATE_OF_BIRTH']= merged_data['DATE_OF_BIRTH'].dt.date
 
     start_date = datetime.strptime(start_date, '%d/%m/%Y')
     end_date = datetime.strptime(end_date, '%d/%m/%Y')
@@ -48,8 +53,13 @@ def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date):
     print(rhino_report_date_filter['date_of_birth'])
     print(merged_data_date_filter['date_of_birth'])
 
-    
+    indicator_values = {"left_only": "In Rhino", "right_only": "In REDRC", "both": "In Both reports"}
+    new_df = rhino_report_date_filter.merge(merged_data_date_filter, on=['encounter_date','date_of_birth','medicare_number'] ,how='outer', indicator = True)
+    new_df['_merge'] = new_df['_merge'].map(indicator_values)
 
+    print(new_df)
+    
+    new_df = new_df.to_csv('new_df.csv', header = True)
     rhino_report.to_csv('rhino.csv' , header = True)
     merged_data.to_csv('test.csv', header=True)
 
