@@ -8,3 +8,5 @@ https://pyinstaller.org/en/stable/
 https://docs.python.org/3/library/dialog.html#module-tkinter.filedialog
 
 http://tkdocs.com/tutorial/eventloop.html
+
+https://en.wikipedia.org/wiki/Callback_(computer_programming)

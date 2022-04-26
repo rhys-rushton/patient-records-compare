@@ -1,30 +1,39 @@
-from cgitb import text
 from tkinter import *
 from tkinter import ttk
 import tkinter.filedialog
-from tokenize import String
-from tracemalloc import start
-from pip import main
 from data import data_processing
-import time
+
 
 class Compare_Data:
 
     def get_location(self,file, file_name, mainframe, col, row, sticky):
         #tkinter.filedialog.askopenfilename(parent=root, title='Please select file')
         file.set(tkinter.filedialog.askopenfilename(parent=root, title=f'Please Load {file_name} File'))
-        if  self.rhino_file.get():
+        if  file.get():
             Label(mainframe, text = f'{file_name} report uploaded').grid(column= col + 1, row= row, sticky= sticky)
         #print(file.get())
 
+    def get_output_location(self, file):
+        file.set(tkinter.filedialog.askdirectory(parent=root, title='Please Choose Where Output Goes'))
+        #print(file.get())
+
+  
+
     def get_data(self):
-        #root.update()
-        data_processing(self.rhino_file.get(), self.red_rc.get(), self.dsp_file.get(), self.start_date.get(), self.end_date.get())
+        data_processing(self.rhino_file.get(), self.red_rc.get(), self.dsp_file.get(), self.start_date.get(), self.end_date.get(), self.output_location.get())
+        #self.change_label()
+        self.status_label['text'] = 'Process Complete'
+        root.update()
+        return
 
     def run_data(self, mainframe):
-        ttk.Label(mainframe, text = 'Currently Running Process. Please do not touch').grid(column=1, row = 7)
+        status = StringVar(value='Currently Running Process. Please do not touch')
+        self.status_label = ttk.Label(mainframe, text = status.get())
+        self.status_label.grid(column=1, row = 8)
         root.update()
         self.get_data()
+    
+    
 
     def __init__(self, root):
         root.title('Data Comparison')
@@ -54,6 +63,9 @@ class Compare_Data:
         entry_end_date.grid(column=1, row=5)
         entry_end_date.insert(END, 'End Date: dd/mm/YYYY')
         ttk.Label(mainframe, text = 'Enter End Date').grid(column=2, row=5)
+
+        self.output_location = StringVar()
+        ttk.Button(mainframe, text='Choose Output Location', command= lambda: self.get_output_location(self.output_location)).grid(column=0,row=7)
 
         for child in mainframe.winfo_children(): 
             child.grid_configure(padx=5, pady=5)

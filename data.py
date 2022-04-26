@@ -4,7 +4,7 @@ from tracemalloc import start
 import pandas as pd
 from datetime import datetime
 
-def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date):
+def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date, output_location):
     pd.set_option('display.float_format', lambda x: '%.0f' % x)
     fields_for_rhino = ['encounter_date', 'encounter_time', 'encounter_id', 'first_name', 'last_name', 'date_of_birth', 'age_at_presentation', 'gender', 'medicare_number', 'indigenous_status', 'address_line1', 'suburb', 'state', 'postcode', 'emergency_contact_name', 'country_of_birth','home_language', 'patient_symptoms', 'usual_medications', 'specimen_collected', 'diagnosis', 'outcome']
     rhino_report = pd.read_excel(rhino_report, dtype={'medicare_number': 'str'},usecols= fields_for_rhino)
@@ -50,26 +50,19 @@ def data_processing(rhino_report, red_rc, dsp_patients, start_date, end_date):
 
     merged_data_date_filter = merged_data_date_filter.rename(columns = {'ServDate':'encounter_date', 'DATE_OF_BIRTH':'date_of_birth','MEDICARE_NUMBER': 'medicare_number'})
 
-    print(rhino_report_date_filter['date_of_birth'])
-    print(merged_data_date_filter['date_of_birth'])
 
     indicator_values = {"left_only": "In Rhino", "right_only": "In REDRC", "both": "In Both reports"}
     new_df = rhino_report_date_filter.merge(merged_data_date_filter, on=['encounter_date','date_of_birth','medicare_number'] ,how='outer', indicator = True)
     new_df['_merge'] = new_df['_merge'].map(indicator_values)
+    #new_df = new_df.drop_duplicates(['encounter_date','date_of_birth','medicare_number'], keep='first')
 
-    print(new_df)
-    
-    new_df = new_df.to_csv('new_df.csv', header = True)
+    new_df = new_df.to_csv(f'{output_location}/new_df.csv', header = True)
     rhino_report.to_csv('rhino.csv' , header = True)
     merged_data.to_csv('test.csv', header=True)
 
-    #for col in rhino_report.columns:
-        #print(col)
+    
 
-    #print('done')
-    #print(merged_data)
-   # print(rhino_report['medicare_number'])
-    #print(merged_data.MEDICARE_NUMBER)
+
 
  
 
