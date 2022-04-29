@@ -10,3 +10,6 @@ https://docs.python.org/3/library/dialog.html#module-tkinter.filedialog
 http://tkdocs.com/tutorial/eventloop.html
 
 https://en.wikipedia.org/wiki/Callback_(computer_programming)
+
+# Creating an Executable 
+pyinstaller --onefile -w -n "Compare Patients" --icon=icon.ico main.py
