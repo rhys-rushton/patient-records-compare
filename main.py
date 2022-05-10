@@ -20,9 +20,14 @@ class Compare_Data:
   
 
     def get_data(self):
-        data_processing(self.rhino_file.get(), self.red_rc.get(), self.dsp_file.get(), self.start_date.get(), self.end_date.get(), self.output_location.get())
+        res = data_processing(self.rhino_file.get(), self.red_rc.get(), self.dsp_file.get(), self.start_date.get(), self.end_date.get(), self.output_location.get())
         #self.change_label()
-        self.status_label['text'] = 'Process Complete'
+        if res == False:
+            self.status_label['text'] = 'There has been an error please contact support bitch'
+        
+        else:
+            self.status_label['text'] = 'Process Complete'
+
         root.update()
         return
 
