@@ -6,7 +6,7 @@ The script uses the pandas library for analysing the excel spreadsheet and then 
 
 The user inputs various csv files into the app and the app will output a result .xlsx file for the user. 
 
-(app.JPG)
+![app](app.JPG)
 
 
 # Instructions for Creating an Executable 
