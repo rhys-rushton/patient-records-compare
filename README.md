@@ -1,15 +1,20 @@
-# patient-records-compare
-app for comparing different instances of patient data re. covid testing
+# Patient Records Comparison
 
-https://stackoverflow.com/questions/48299396/convert-tkinter-to-exe
+This is a tkinter app to compare various patient records to look for discrepencies amongst their covid testing records. 
 
-https://pyinstaller.org/en/stable/
+The script uses the pandas library for analysing the excel spreadsheet and then uses tkinter for the GUI. 
 
-https://docs.python.org/3/library/dialog.html#module-tkinter.filedialog
+The user inputs various csv files into the app and the app will output a result .xlsx file for the user. 
 
-http://tkdocs.com/tutorial/eventloop.html
 
-https://en.wikipedia.org/wiki/Callback_(computer_programming)
 
-# Creating an Executable 
+
+# Instructions for Creating an Executable 
 pyinstaller --onefile -w -n "Compare Patients" --icon=icon.ico main.py
+
+The above assumes you are using the pyinstaller package to bundle the script. 
+
+
+
+
+
